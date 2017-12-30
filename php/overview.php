@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Programmlogik
 try{
 	$readDB = new PDO
@@ -488,7 +488,7 @@ setlocale(LC_TIME, 'de_DE');
 						<?php if(isset($_POST['nodatum'])) 
 								{echo 'checked';} ?>
 						name="nodatum" value="nodatum">
-						Datum für Suche deaktivieren</label>
+						Heute</label>
 						</div>
 						<h3 class="accordion"> Aufsteigend/Absteigend Sortieren </h3>
 						<div class="panel">
