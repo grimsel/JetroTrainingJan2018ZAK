@@ -1,0 +1,153 @@
+* { 
+	font-family: Ebrima;
+}
+
+
+body { 
+	background: #e3e4e8;
+}
+
+.spacer { 
+	margin-top: 10%; 
+}
+
+.float { 
+	float: left;
+}
+
+#logo { 
+	width: 50%;
+	padding-top: 0%;
+}
+
+header #title { 
+		 display: inline-block;
+		 font-family:Ebrima;
+		 position:relative;
+		 font-size: 40pt;
+		 display: table-cell;
+		 vertical-align: middle;
+}
+
+.clear { 
+	clear: both;
+}
+
+
+header { 
+	display: table;
+	position: relative;
+	top: 100%;
+	width: 100%;
+	padding: 1% 0.0877%;
+	background: #10b2f2;
+	background: -webkit-linear-gradient(-180deg,#10b2f2,#63d2ff);
+}
+
+#wrapper {  
+	font-family:Ebrima;
+	position: relative;
+	width: 100%;
+	background-color: #ffffff;
+	background: -webkit-linear-gradient(90deg,#ffffff,#f3f3f3);
+	border: solid #f3f3f3;
+}
+		 
+#title_login {  
+	display:block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 10%;
+	font-size: 20pt;
+}
+
+
+input[type='text'],
+input[type='password'],
+input[type='submit'], label { 
+	display: block;
+	margin: 1%;
+	padding: 1%;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+	
+input[type='text'], input[type='password'],
+input[type='email'], input[type='date'],input[type='time'] {
+	padding: 1.5%;
+	cursor: text;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border: 1px solid #bbb;
+	background: white;
+}
+
+input[type='text']:focus, input[type='password']:focus, input[type='email']:focus
+				{
+				padding: 1.5%;
+				cursor: text;
+				-webkit-appearance: none;
+			    -moz-appearance: none;
+				appearance: none;
+				border: 1px solid #10b2f2;
+				background: white;
+}
+				
+		
+				  
+					  
+#resetPW, #Welcome { 
+	display:block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 17%;
+	font-size: 12pt;
+}
+
+#Welcome { 
+	font-size: 14pt; 
+}		   
+		   
+footer { 
+		 position: relative;
+		 margin: 0%;
+		 padding: 1% 0%;
+		 padding-left: 1%;
+		 top: 100%;
+		 width: 99%;
+		 background: #727375;
+		 color: white;
+}
+
+
+.viewLogin {  
+	position: absolute;
+	width: 45%;
+	left: 25%;
+}
+
+			 
+a:active {
+	color: #63d2ff;
+}
+
+
+a { 
+	color: #10b2f2;
+}
+
+nav a p  {  
+	float: left;
+	font-weight: bold;
+	margin-right: 2%;
+	border: solid white;
+	padding-right: 5%;
+	text-align: center;
+	text-decoration: none;
+	color: white;
+	background: #10b2f2;
+}
+		
+		
