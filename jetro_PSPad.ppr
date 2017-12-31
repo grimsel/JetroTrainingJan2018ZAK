@@ -14,7 +14,7 @@ FileFormat=0
 ProjectFilesOnly=0
 Extensions=*.php;*.htm;*.bak;*.css;*.icc;*.json;*.sql;*.txt
 [Project tree]
-jetro
+jetro_PSPad
 	+jetro
 		-css
 			css\index.css
@@ -22,7 +22,7 @@ jetro
 			css\style2.css
 		-img
 			img\style2.css
-		-php
+		+php
 			php\administration.php
 			php\export_month_series.php
 			php\export_week_series.php

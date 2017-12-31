@@ -60,9 +60,29 @@ require_once('../tcpdf/tcpdf_exporter/tcpdf/tcpdf.php');
 	$isHereStatementUnion = "";
 	$sortNameOrTime = "";
 
-												
-if(isset($_POST['submit']) || isset($_POST['export']) || isset($_POST['export_week']) || isset($_POST['export_month']) ||
-						    isset($_POST['series_export_week']) || isset($_POST['series_export_month']))
+/* ----------- Generierung der Zusammenstellung der Hauptansicht, oder des PDF-Exports.
+
+Dabei wird der Code für Hauptansicht absichtlich weiter oben positioniert. Denn er verhältnismässig kurz, verglichen mit dem PDF-Export.    
+               
+--
+*/												
+
+if((isset($_POST['submit']) || isset($_POST['export']) || isset($_POST['export_week']) || isset($_POST['export_month']) ||
+						    isset($_POST['series_export_week']) || isset($_POST['series_export_month']))==false)
+ {	// Start Query des aktuellen Tages	
+			$badgeQuery= $readDB ->query("SELECT Q.* FROM(
+											 (SELECT U.ID_UID_USER, U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
+												 A.Abteilung, P.Position
+                                              FROM badging_user B
+											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
+							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
+											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
+											   $dateQuery)
+											   $unionToDay)Q $sortQuery");
+	   }
+
+else //PDF-Export
 {												
 	// Zeiteinstellung Deutsch
 setlocale(LC_TIME, 'de_DE');
@@ -380,24 +400,7 @@ setlocale(LC_TIME, 'de_DE');
 				
 		 
 
-}else {	// Start Query des aktuellen Tages	
-			$badgeQuery= $readDB ->query("SELECT Q.* FROM(
-											 (SELECT U.ID_UID_USER, U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-												 A.Abteilung, P.Position
-                                              FROM badging_user B
-											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
-							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
-											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
-											   $dateQuery)
-											   $unionToDay)Q $sortQuery");
-			
-
-
-			
-					
-	   }
-
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -436,9 +439,10 @@ setlocale(LC_TIME, 'de_DE');
 							 {echo htmlspecialchars($_POST['searchField']);} ?>"
 							id="searchField" name="searchField" placeholder="Name eingeben">
 						<div class="clear"></div>
-						<h3 class="accordion"> Nach Funktion </h3>
+						<h3 class="accordion"> Personengruppe </h3>
 							<div class="panel">
-							<label><input type="checkbox" <?php if(isset($_POST['funktion'])) 
+<!--
+ 							<label><input type="checkbox" <?php if(isset($_POST['funktion'])) 
 							{if(in_array("ll1", $_POST['funktion'])) {echo 'checked';} }?>
 							name="funktion[]" value="ll1">Lernende 1.LJ</label>
 							<label><input type="checkbox"
@@ -461,14 +465,18 @@ setlocale(LC_TIME, 'de_DE');
 							<?php if(isset($_POST['funktion'])) 
 							{if(in_array("ak", $_POST['funktion'])) {echo 'checked';} }?>
 							name="funktion[]" value="ak">Abklärung</label>
-							<label><input type="checkbox"
+-->							<label><input type="radio"
 							<?php if(isset($_POST['funktion'])) 
 							{if(in_array("tn", $_POST['funktion'])) {echo 'checked';} }?>
-						name="funktion[]" value="tn">Teilnehmer</label>
-							<label><input type="checkbox"
+						name="funktion[]" value="tn">Teilnehmer IT</label>
+							<label><input type="radio"
 								<?php if(isset($_POST['funktion'])) 
 							{if(in_array("gl", $_POST['funktion'])) {echo 'checked';} }?>
-						name="funktion[]" value="gl">Gruppenleiter</label>
+						name="funktion[]" value="tn">Teilnehmer KV</label>
+							<label><input type="radio"
+								<?php if(isset($_POST['funktion'])) 
+							{if(in_array("gl", $_POST['funktion'])) {echo 'checked';} }?>
+						name="funktion[]" value="gl">GL & MA</label>
 						</div>
 						<h3 class="accordion"> Anwesend/Abwesend </h3>
 						<div class="panel">
@@ -490,20 +498,22 @@ setlocale(LC_TIME, 'de_DE');
 						name="nodatum" value="nodatum">
 						Heute</label>
 						</div>
-						<h3 class="accordion"> Aufsteigend/Absteigend Sortieren </h3>
+						<h3 class="accordion"> Sortieren </h3>
 						<div class="panel">
-						<label><input type="radio"
+						<!--
+       <label><input type="radio"
 						name="name" value="name_ascending">
 						Nach Name (A-Z)</label>
 						<label><input type="radio"
 						name="name" value="name_descending">
 						Nach Name (Z-A)</label>
-						<label><input type="radio"
+						
+      --><label><input type="radio"
 						name="time" value="time_ascending">
-						Nach Datum/Zeit (Aufsteigend)</label>
+						Datum/Zeit (Aufsteigend)</label>
 						<label><input type="radio"
 						name="time" value="time_descending">
-						Nach Datum/Zeit (Absteigend)</label>
+						Datum/Zeit (Absteigend)</label>
 						</div>
 						<button class="btn" name="submit" type="submit" formaction=""><span>Filter anwenden</span></button>
 						<h3 class="accordion"> Exportfunktionen (PDF) </h3>
@@ -552,10 +562,8 @@ setlocale(LC_TIME, 'de_DE');
 			<table>
 					<h2> Badging Daten </h2>
 					<tr id="tableTitle">
-					<th> Vorname </th>
 					<th> Nachname </th>
-					<th> Abteilung </th>
-					<th> Position </th>
+					<th> Vorname </th>
 					<th> Badging IN </th>
 					<th> Badging OUT </th>
 					<th> Datum </th>
@@ -576,10 +584,10 @@ setlocale(LC_TIME, 'de_DE');
 						?>
 						
 					<?php echo "<tr style=\"color: $color;\" title=\"UID: ". $outputData['UID_Badge'] ."\">"; ?>
-						<?php echo "<td>". htmlspecialchars($outputData['Vorname']) . " " . "</td>"; ?>
 						<?php echo "<td>". htmlspecialchars($outputData['Nachname']) . " " . "</td>"; ?>
-						<?php echo "<td>" . htmlspecialchars($outputData['Abteilung']) . "</td>"; ?>
-						<?php echo "<td>" . htmlspecialchars($outputData['Position']) . "</td>"; ?>
+						<?php echo "<td>". htmlspecialchars($outputData['Vorname']) . " " . "</td>"; ?>
+						<?php //echo "<td>" . htmlspecialchars($outputData['Abteilung']) . "</td>"; ?>
+						<?php //echo "<td>" . htmlspecialchars($outputData['Position']) . "</td>"; ?>
 						<?php echo "<td>" . substr($outputData['badging_starttime'],11,5) . "</td>"; ?>
 						<?php echo "<td>" . substr($outputData['badging_endtime'],11,5) . "</td>"; ?>
 						<?php echo "<td>" . substr($outputData['badging_starttime'],0,10). "</td>"; ?>
