@@ -23,7 +23,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `badging_abteilung`
+-- Tabellenstruktur für Tabelle `badging_pStatus`
 --
 -- CREATE DATABASE `jetro_db`;
 
@@ -31,9 +31,9 @@ USE `jetro_db`;
 ALTER DATABASE jetro_db
 	COLLATE utf8_unicode_ci;
 
-CREATE TABLE `badging_abteilung` (
-  `ID_abteilung` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
-  `Abteilung` char(5) DEFAULT NULL
+CREATE TABLE `badging_pStatus` (
+  `ID_pStatus` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  `pStatus` char(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -82,7 +82,7 @@ CREATE TABLE `badging_user` (
   `ID_USER` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `Vorname` varchar(255) DEFAULT NULL,
   `Nachname` varchar(255) DEFAULT NULL,
-  `abteilung_fk` int(11) DEFAULT NULL,
+  `pStatus_fk` int(11) DEFAULT NULL,
   `position_fk` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -141,7 +141,7 @@ CREATE TABLE `uid_user` (
 --
 
 --
--- Indizes für die Tabelle `badging_abteilung`
+-- Indizes für die Tabelle `badging_pStatus`
 --
 
 --
@@ -165,7 +165,7 @@ ALTER TABLE `badging_time`
 --
 ALTER TABLE `badging_user`
   ADD KEY `user_and_position` (`position_fk`),
-  ADD KEY `index_user` (`abteilung_fk`,`position_fk`);
+  ADD KEY `index_user` (`pStatus_fk`,`position_fk`);
 
 --
 -- Indizes für die Tabelle `email_adressen`
@@ -199,9 +199,9 @@ ALTER TABLE `uid_user`
 --
 
 --
--- KOLLATION für Tabelle `badging_abteilung`
+-- KOLLATION für Tabelle `badging_pStatus`
 --
-ALTER TABLE `badging_abteilung`
+ALTER TABLE `badging_pStatus`
   COLLATE utf8_unicode_ci;
 --
 -- KOLLATION für Tabelle `badging_admin`
@@ -257,7 +257,7 @@ ALTER TABLE `badging_time`
 -- Constraints der Tabelle `badging_user`
 --
 ALTER TABLE `badging_user`
-  ADD CONSTRAINT `user_and_abteilung` FOREIGN KEY (`abteilung_fk`) REFERENCES `badging_abteilung` (`ID_abteilung`),
+  ADD CONSTRAINT `user_and_pStatus` FOREIGN KEY (`pStatus_fk`) REFERENCES `badging_pStatus` (`ID_pStatus`),
   ADD CONSTRAINT `user_and_position` FOREIGN KEY (`position_fk`) REFERENCES `badging_position` (`ID_position`);
 
 --
@@ -295,7 +295,7 @@ INSERT INTO badging_position (ID_position, Position)
 	(8, 'GL'),
 	(9, 'MA');
 
-INSERT INTO badging_abteilung (ID_abteilung, Abteilung) 
+INSERT INTO badging_pStatus (ID_pStatus, pStatus) 
   VALUES
     (1, 'BM-IT'),
 	(2, 'BM-KV');

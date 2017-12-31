@@ -36,7 +36,7 @@ $badgeQuery = $readDB ->query("SELECT *
 								   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER
 								   LEFT JOIN email_uid E ON E.user_fk = B.ID_USER
 								   LEFT JOIN email_adressen M ON E.emailadressen_fk = M.ID_email
-								   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+								   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 								   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 								   WHERE B.Vorname LIKE $search OR B.Nachname LIKE $search OR U.UID_Badge LIKE $search ORDER BY B.Nachname;");
 
@@ -52,7 +52,7 @@ $badgeQuery = $readDB ->query("SELECT *
 						$userData = explode("_", $identifikationUser); // 0 = ID_USER, 1 = ID_UID_USER
 						$email = htmlspecialchars($_POST['email']);
 						$position = htmlspecialchars($_POST['position']);
-						$abteilung = htmlspecialchars($_POST['abteilung']);
+						$pStatus = htmlspecialchars($_POST['pStatus']);
 						$uidNr = htmlspecialchars($_POST['uid']);
 						$vorname = htmlspecialchars($_POST['name']);
 						$nachname = htmlspecialchars($_POST['nachname']);
@@ -75,9 +75,9 @@ $badgeQuery = $readDB ->query("SELECT *
 																WHERE emailadresse = '$email')
 								WHERE user_fk = $userData[0];";
 			
-			$updateAbteilung = "UPDATE badging_user	
-								SET abteilung_fk = (SELECT ID_abteilung FROM badging_abteilung
-									 WHERE Abteilung = '$abteilung')
+			$updatepStatus = "UPDATE badging_user	
+								SET pStatus_fk = (SELECT ID_pStatus FROM badging_pStatus
+									 WHERE pStatus = '$pStatus')
 											WHERE ID_USER = $userData[0];";
 
 			$updatePosition = "UPDATE badging_user	
@@ -115,9 +115,9 @@ $badgeQuery = $readDB ->query("SELECT *
 				if($checkMutation <= 0)
 					echo "<script> alert(\"Sie haben den Nutzer erfolgreich Mutiert\"); </script>";
 				}
-			if(!empty($_POST['abteilung']))
+			if(!empty($_POST['pStatus']))
 				{
-				$updateStatement = $readDB->prepare($updateAbteilung);
+				$updateStatement = $readDB->prepare($updatepStatus);
 				$updateStatement->execute();
 				if($checkMutation <= 0)
 					echo "<script> alert(\"Sie haben den Nutzer erfolgreich Mutiert\"); </script>";
@@ -198,24 +198,24 @@ $badgeQuery = $readDB ->query("SELECT *
 					?>
 				</select>
 				</label>
-				<label class="mutationLabel">Abteilung 
-				<select name="abteilung">
+				<label class="mutationLabel">pStatus 
+				<select name="pStatus">
 				<?php
-				$tempData = $outputData['Abteilung'];
-				$badgeAbt = $readDB ->query("SELECT DISTINCT Abteilung FROM badging_abteilung A ORDER BY Abteilung ASC");
+				$tempData = $outputData['pStatus'];
+				$badgeAbt = $readDB ->query("SELECT DISTINCT pStatus FROM badging_pStatus A ORDER BY pStatus ASC");
 				while($outputAttr = $badgeAbt->fetch(PDO::FETCH_ASSOC))
 					{
-						if($tempData == $outputAttr['Abteilung']) // Wenn Wert des Dropdownmenüs dem Wert des Nutzers entspricht ...
+						if($tempData == $outputAttr['pStatus']) // Wenn Wert des Dropdownmenüs dem Wert des Nutzers entspricht ...
 							{
 								if($tempData == NULL) // Dann dieser übernehmen "Keine Angabe" -> falls NULL Wert, sonst Originalwert selektieren
-									{$optionsAbt .= "<option value=\"" .  $outputAttr['Abteilung'] . "\" selected>" . "Keine Angabe" . "</option>";}
-									else{$optionsAbt .= "<option value=\"" .  $outputAttr['Abteilung'] . "\" selected>" . $outputAttr['Abteilung'] . "</option>";}
+									{$optionsAbt .= "<option value=\"" .  $outputAttr['pStatus'] . "\" selected>" . "Keine Angabe" . "</option>";}
+									else{$optionsAbt .= "<option value=\"" .  $outputAttr['pStatus'] . "\" selected>" . $outputAttr['pStatus'] . "</option>";}
 							}else {
-								if($outputAttr['Abteilung'] == NULL)
+								if($outputAttr['pStatus'] == NULL)
 									{
 										$optionsAbt .= "<option value=\"" . "NULL". "\" >" . "Keine Angabe" . "</option>"; 
 									}else{
-									$optionsAbt .= "<option value=\"" . $outputAttr['Abteilung'] . "\" >" . $outputAttr['Abteilung'] . "</option>";
+									$optionsAbt .= "<option value=\"" . $outputAttr['pStatus'] . "\" >" . $outputAttr['pStatus'] . "</option>";
 										}
 									}
 					}

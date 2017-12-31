@@ -30,7 +30,7 @@ $vorname = "";
 $nachname = "";
 $uid = "";
 $user_badge = "";
-$user_abt = "";
+$user_stat = "";
 $user_pos = "";
 $insertStartTime = "";
 $insertEndTime = "";
@@ -41,15 +41,15 @@ $toDay = date("Y-m-d",$time); // Zeit/Datum Format
 
 // Nutzer erstellen 
 
-// Abteilung, Position und Vorgesetztenemail Inserts beim User sind optional
+// Status, Position und Vorgesetztenemail Inserts beim User sind optional
 $insertPosition = "UPDATE badging_user	
 			SET position_fk = (SELECT ID_position FROM badging_position
 							    WHERE Position = :user_pos)           
 			WHERE  Vorname = :vorname AND Nachname = :nachname;";
 			
-$insertAbteilung = "UPDATE badging_user	
-			SET abteilung_fk = (SELECT ID_abteilung FROM badging_abteilung
-							 WHERE Abteilung = :user_abt)
+$insertPstatus = "UPDATE badging_user	
+			SET pStatus_fk = (SELECT ID_pStatus FROM badging_pStatus
+							 WHERE pStatus = :user_stat)
 			WHERE Vorname = :vorname AND Nachname = :nachname;";
 			
 $insertEmail = "INSERT INTO email_uid(user_fk)	
@@ -80,7 +80,7 @@ $insertEmail = "INSERT INTO email_uid(user_fk)
 							 WHERE Vorname = :vorname AND Nachname = :nachname);
     
 	$insertPosition
-	$insertAbteilung
+	$insertPstatus
 	$insertEmail				
 						COMMIT;    ";
 
@@ -89,10 +89,10 @@ $insertEmail = "INSERT INTO email_uid(user_fk)
 // Zeit anpassen
 											 
 // Querys für Dropdownlisten
-$dropDownListAbt = $readDB ->query("SELECT Abteilung FROM badging_abteilung ORDER BY Abteilung ASC");
+$dropDownListAbt = $readDB ->query("SELECT pStatus FROM badging_pStatus ORDER BY pStatus ASC");
 $dropDownListPos = $readDB->query("SELECT Position FROM badging_position ORDER BY Position ASC");												 
 $dropDownListEmail = $readDB->query("SELECT emailadresse FROM email_adressen ORDER BY emailadresse ASC");		
-$dropDownListAbtDel = $readDB ->query("SELECT Abteilung FROM badging_abteilung ORDER BY Abteilung ASC");
+$dropDownListAbtDel = $readDB ->query("SELECT pStatus FROM badging_pStatus ORDER BY pStatus ASC");
 $dropDownListPosDel = $readDB->query("SELECT Position FROM badging_position ORDER BY Position ASC");												 
 $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen ORDER BY emailadresse ASC");		
 	if(isset($_POST['create_submit']))
@@ -102,15 +102,15 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
 			$uid = htmlspecialchars($_POST['create_uid']);
 			$vorname = htmlspecialchars($_POST['create_vorname']);
 			$nachname = htmlspecialchars($_POST['create_nachname']);
-			$abteilung = htmlspecialchars($_POST['create_abteilung']);
+			$pStatus = htmlspecialchars($_POST['create_pStatus']);
 			$position = htmlspecialchars($_POST['create_position']);
 			$passwort = htmlspecialchars($_POST['create_passwort']);
 			$email = htmlspecialchars($_POST['create_email']);
 			
 			
-				if(!(empty($_POST['create_abteilung'])))
+				if(!(empty($_POST['create_pStatus'])))
 					{
-						$insertAbteilung = "";
+						$insertPstatus = "";
 					}
 				if(!(empty($_POST['create_position'])))
 					{
@@ -126,7 +126,7 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
 					 $insertStatement->bindValue(":uid_badge", $uid);
 					 $insertStatement->bindValue(":vorname", $vorname);
 					 $insertStatement->bindValue(":nachname", $nachname);
-					 $insertStatement->bindValue(":user_abt", $abteilung);
+					 $insertStatement->bindValue(":user_stat", $pStatus);
 					 $insertStatement->bindValue(":user_pos", $position);
 					 $insertStatement->bindValue(":email", $email);
 					 $insertStatement->execute();
@@ -167,17 +167,17 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
  
 	}
 
-	if(isset($_POST['creating_abteilung']))
+	if(isset($_POST['creating_pStatus']))
 		{
-			if(!(empty($_POST['created_abteilung'])))
+			if(!(empty($_POST['created_pStatus'])))
 				{
-				$neueAbteilung = "'".htmlspecialchars($_POST['created_abteilung'])."'";
-				$abteilungInsert = "INSERT INTO badging_abteilung(Abteilung)
-										VALUES($neueAbteilung);";
+				$neuepStatus = "'".htmlspecialchars($_POST['created_pStatus'])."'";
+				$pStatusInsert = "INSERT INTO badging_pStatus(pStatus)
+										VALUES($neuepStatus);";
 			
-				$insertCreateStatement = $readDB->prepare($abteilungInsert);
+				$insertCreateStatement = $readDB->prepare($pStatusInsert);
 				$insertCreateStatement->execute();
-				}else { echo "<script> alert('Bitte geben Sie eine neue Abteilung an'); </script>";};
+				}else { echo "<script> alert('Bitte geben Sie einen neuen Status an'); </script>";};
 		}
 
 
@@ -249,17 +249,17 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
 				
 		}
 		
-	if(isset($_POST['delete_abteilung']))
+	if(isset($_POST['delete_pStatus']))
 	{
 		
-		$abteilungDel = "'" . htmlspecialchars($_POST['abteilung_to_delete']) . "'";
+		$pStatusDel = "'" . htmlspecialchars($_POST['pStatus_to_delete']) . "'";
 		$delAbt =  "BEGIN;
 					UPDATE badging_user
-						SET abteilung_fk = NULL
-							WHERE abteilung_fk = (SELECT ID_abteilung FROM badging_abteilung WHERE Abteilung = $abteilungDel);
+						SET pStatus_fk = NULL
+							WHERE pStatus_fk = (SELECT ID_pStatus FROM badging_pStatus WHERE pStatus = $pStatusDel);
 						
-					DELETE FROM badging_abteilung	
-						WHERE Abteilung = $abteilungDel;
+					DELETE FROM badging_pStatus	
+						WHERE pStatus = $pStatusDel;
 					COMMIT;";
 		$deleteStatement = $readDB->prepare($delAbt);
 		$deleteStatement->execute();
@@ -329,13 +329,13 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
 			<label class="mutationLabel"> Nachname <input type="text" name="create_nachname" size="25" placeholder="Nachname">
 			</label>
 			<label class="mutationLabel">
-			Abteilung<span id="label_spacer_abt"></span>
-			<select name="create_abteilung">
+			pStatus<span id="label_spacer_stat"></span>
+			<select name="create_pStatus">
 				<?php while($listElement = $dropDownListAbt->fetch(PDO::FETCH_ASSOC)) : ?>
-					<?php if($listElement['Abteilung'] != ""){
-					echo "<option value=\"". $listElement['Abteilung']. "\">". $listElement['Abteilung']."</option>"; 
+					<?php if($listElement['pStatus'] != ""){
+					echo "<option value=\"". $listElement['pStatus']. "\">". $listElement['pStatus']."</option>"; 
 					}
-					else {echo "<option lenght=\"25\" value=\"". $listElement['Abteilung']. "\" selected>". "Keine Angabe"."</option>";
+					else {echo "<option lenght=\"25\" value=\"". $listElement['pStatus']. "\" selected>". "Keine Angabe"."</option>";
 }?>
 				<?php endwhile; ?>
 			</select>
@@ -391,8 +391,8 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
 	<h1> Hinzufügen </h1>
 	<form id="reg_form" action="" method="POST">
 		<h2> Eigenschaften hinzufügen </h2>
-		<label class="mutationLabel"> <input type="text" size="25" name="created_abteilung" placeholder="Abteilung (z.B. BM-IT etc.)">
-		<input type="submit" name="creating_abteilung" value="Abteilung eintragen">
+		<label class="mutationLabel"> <input type="text" size="25" name="created_pStatus" placeholder="pStatus (z.B. aktiv etc.)">
+		<input type="submit" name="creating_pStatus" value="Status eintragen">
 		</label>
 		<label class="mutationLabel"> <input type="text" name="created_position" size="25" placeholder="Position (z.B. AK etc.)">
 		<input type="submit" name="creating_position" value="Position eintragen">
@@ -405,16 +405,16 @@ $dropDownListEmailDel = $readDB->query("SELECT emailadresse FROM email_adressen 
 	<h1> Entfernen </h1>
 	<form id="reg_form" action="" method="POST">
 		<h2> Eigenschaften entfernen </h2><label class="mutationLabel">
-		<select name="abteilung_to_delete">
+		<select name="pStatus_to_delete">
 				<?php while($listElement = $dropDownListAbtDel->fetch(PDO::FETCH_ASSOC)) : ?>
-					<?php if($listElement['Abteilung'] != ""){
-					echo "<option value=\"". $listElement['Abteilung']. "\">". $listElement['Abteilung']."</option>"; 
+					<?php if($listElement['pStatus'] != ""){
+					echo "<option value=\"". $listElement['pStatus']. "\">". $listElement['pStatus']."</option>"; 
 					}
-					else {echo "<option lenght=\"25\" value=\"". $listElement['Abteilung']. "\" selected>". "Keine Angabe"."</option>";
+					else {echo "<option lenght=\"25\" value=\"". $listElement['pStatus']. "\" selected>". "Keine Angabe"."</option>";
 }?>
 				<?php endwhile; ?>
 			</select>
-		<input type="submit" name="delete_abteilung" value="Abteilung löschen">
+		<input type="submit" name="delete_pStatus" value="pStatus löschen">
 		</label>
 		<label class="mutationLabel"><select name="position_to_delete">
 				<?php while($listElement = $dropDownListPosDel->fetch(PDO::FETCH_ASSOC)) : ?>

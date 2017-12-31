@@ -57,14 +57,14 @@ if(isset($_SESSION['Benutzername']))
 	
 	$unionToDay = "UNION ( 
 	           SELECT U.ID_UID_USER, U.UID_Badge,B.Vorname, B.Nachname,'', '',
-			           A.Abteilung, P.Position
+			           A.pStatus, P.Position
 					FROM badging_user B LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER
-					LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+					LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 					LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 					WHERE B.ID_USER NOT IN (SELECT B.ID_USER FROM badging_user B
 											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position 
 											   $dateQuery))  "; // Subquery sucht nach User-IDs in der vorherigen Abfrage
 											   // bereits vorkamen -> UNION-Statement ergänzt fehlende Einträge
@@ -155,15 +155,15 @@ if(isset($_POST['submit']))
 				  FROM badging_user B
 				   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 				   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-				   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+				   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 				   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 						$dateQueryExtension "; //  letzte Änderung: $searchQuery $checkboxQuery $isHereStatement
 			
 					$unionFilter = "UNION (
 							SELECT U.ID_UID_USER, U.UID_Badge,B.Vorname, B.Nachname,'', '',
-			           A.Abteilung, P.Position
+			           A.pStatus, P.Position
 					FROM badging_user B LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER
-					LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+					LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 					LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 					LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
 					WHERE B.ID_USER NOT IN ($subQuery) $searchQuery $checkboxQuery
@@ -173,11 +173,11 @@ if(isset($_POST['submit']))
 				// Query mit allen möglichen Kombinationen, Q = Platzhalter für die Tabellen, * = ersetzen durch Attribut
 				$badgeQuery = $readDB ->query("SELECT Q.* FROM(
 											 (SELECT ID_UID_USER,U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-												 A.Abteilung, P.Position
+												 A.pStatus, P.Position
                                               FROM badging_user B
 											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 													$dateQueryExtension $searchQuery $checkboxQuery) $unionFilter)Q $isHereStatementUnion  $sortQuery  
 													");
@@ -185,11 +185,11 @@ if(isset($_POST['submit']))
 } else {	// Start Query des aktuellen Tages
 			$badgeQuery= $readDB ->query("SELECT Q.* FROM(
 											 (SELECT U.ID_UID_USER, U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-												 A.Abteilung, P.Position
+												 A.pStatus, P.Position
                                               FROM badging_user B
 											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 											   $dateQuery)
 											   $unionToDay)Q $sortQuery");

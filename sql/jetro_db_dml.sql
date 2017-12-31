@@ -1,4 +1,4 @@
-﻿
+
 
 USE jetro_db;
 		  
@@ -17,7 +17,7 @@ INSERT INTO badging_position (ID_position, Position)
 	(8, 'GL'),
 	(9, 'MA');
 
-INSERT INTO badging_abteilung (ID_abteilung, Abteilung) 
+INSERT INTO badging_pStatus (ID_pStatus, pStatus) 
   VALUES
     (1, 'BM-IT'),
 	(2, 'BM-KV');

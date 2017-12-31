@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../css/style.css">
@@ -219,11 +219,11 @@ function create_and_export_pdf_series()
 		$search = "'" .  "%%" . "'";
 						//Monatsexport Query
 							$badgeQueryMonth = $readDB ->query("SELECT ID_UID_USER,U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-										 A.Abteilung, P.Position
+										 A.pStatus, P.Position
 									  FROM badging_user B
 									   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 									   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-									   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+									   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 									   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 											WHERE DATE_FORMAT(T.badging_starttime, '%m') = DATE_FORMAT(NOW(), '%m') AND YEAR(T.badging_starttime) = YEAR(NOW())
 												AND (B.Vorname LIKE $search OR B.Nachname LIKE $search)

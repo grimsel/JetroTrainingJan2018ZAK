@@ -25,19 +25,19 @@ USE `jetro_db`;
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `badging_abteilung`
+-- Tabellenstruktur für Tabelle `badging_pStatus`
 --
 
-CREATE TABLE IF NOT EXISTS `badging_abteilung` (
-`ID_abteilung` int(11) NOT NULL,
-  `Abteilung` char(5) CHARACTER SET latin1 DEFAULT NULL
+CREATE TABLE IF NOT EXISTS `badging_pStatus` (
+`ID_pStatus` int(11) NOT NULL,
+  `pStatus` char(5) CHARACTER SET latin1 DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Daten für Tabelle `badging_abteilung`
+-- Daten für Tabelle `badging_pStatus`
 --
 
-INSERT INTO `badging_abteilung` (`ID_abteilung`, `Abteilung`) VALUES
+INSERT INTO `badging_pStatus` (`ID_pStatus`, `pStatus`) VALUES
 (3, NULL),
 (4, 'BM KV');
 
@@ -1202,7 +1202,7 @@ CREATE TABLE IF NOT EXISTS `badging_user` (
 `ID_USER` int(11) NOT NULL,
   `Vorname` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `Nachname` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
-  `abteilung_fk` int(11) DEFAULT NULL,
+  `pStatus_fk` int(11) DEFAULT NULL,
   `position_fk` int(11) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -1210,7 +1210,7 @@ CREATE TABLE IF NOT EXISTS `badging_user` (
 -- Daten für Tabelle `badging_user`
 --
 
-INSERT INTO `badging_user` (`ID_USER`, `Vorname`, `Nachname`, `abteilung_fk`, `position_fk`) VALUES
+INSERT INTO `badging_user` (`ID_USER`, `Vorname`, `Nachname`, `pStatus_fk`, `position_fk`) VALUES
 (1, 'Andreas', 'Kienast', NULL, 8),
 (2, 'Kyra', 'Baldegger', NULL, NULL),
 (3, '(Missing)_1', '(Missing)_1', NULL, NULL),
@@ -1580,10 +1580,10 @@ INSERT INTO `uid_user` (`ID_UID_USER`, `UID_Badge`, `USER_Badge_fk`) VALUES
 --
 
 --
--- Indizes für die Tabelle `badging_abteilung`
+-- Indizes für die Tabelle `badging_pStatus`
 --
-ALTER TABLE `badging_abteilung`
- ADD PRIMARY KEY (`ID_abteilung`), ADD UNIQUE KEY `Abteilung` (`Abteilung`);
+ALTER TABLE `badging_pStatus`
+ ADD PRIMARY KEY (`ID_pStatus`), ADD UNIQUE KEY `pStatus` (`pStatus`);
 
 --
 -- Indizes für die Tabelle `badging_admin`
@@ -1607,7 +1607,7 @@ ALTER TABLE `badging_time`
 -- Indizes für die Tabelle `badging_user`
 --
 ALTER TABLE `badging_user`
- ADD PRIMARY KEY (`ID_USER`), ADD UNIQUE KEY `unique_names` (`Vorname`,`Nachname`), ADD KEY `user_and_position` (`position_fk`), ADD KEY `index_user` (`abteilung_fk`,`position_fk`);
+ ADD PRIMARY KEY (`ID_USER`), ADD UNIQUE KEY `unique_names` (`Vorname`,`Nachname`), ADD KEY `user_and_position` (`position_fk`), ADD KEY `index_user` (`pStatus_fk`,`position_fk`);
 
 --
 -- Indizes für die Tabelle `email_adressen`
@@ -1638,10 +1638,10 @@ ALTER TABLE `uid_user`
 --
 
 --
--- AUTO_INCREMENT für Tabelle `badging_abteilung`
+-- AUTO_INCREMENT für Tabelle `badging_pStatus`
 --
-ALTER TABLE `badging_abteilung`
-MODIFY `ID_abteilung` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+ALTER TABLE `badging_pStatus`
+MODIFY `ID_pStatus` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT für Tabelle `badging_admin`
 --
@@ -1696,7 +1696,7 @@ ADD CONSTRAINT `time_and_uid` FOREIGN KEY (`USER_FK`) REFERENCES `badging_user` 
 -- Constraints der Tabelle `badging_user`
 --
 ALTER TABLE `badging_user`
-ADD CONSTRAINT `user_and_abteilung` FOREIGN KEY (`abteilung_fk`) REFERENCES `badging_abteilung` (`ID_abteilung`),
+ADD CONSTRAINT `user_and_pStatus` FOREIGN KEY (`pStatus_fk`) REFERENCES `badging_pStatus` (`ID_pStatus`),
 ADD CONSTRAINT `user_and_position` FOREIGN KEY (`position_fk`) REFERENCES `badging_position` (`ID_position`);
 
 --

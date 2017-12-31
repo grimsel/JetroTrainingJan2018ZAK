@@ -12,6 +12,7 @@ DontOpen=0
 AbsolutePath=0
 FileFormat=0
 ProjectFilesOnly=0
+HTServer=localhost
 Extensions=*.php;*.htm;*.bak;*.css;*.icc;*.json;*.sql;*.txt
 [Project tree]
 jetro_PSPad
@@ -282,5 +283,26 @@ jetro_PSPad
 			tcpdf\tcpdf_parser.php
 		index.php
 [Open project files]
+0=New1.txt
+1=php\overview.php
+2=php\administration.php
+3=php\export_month_series.php
+4=php\mutation.php
 [Selected Project Files]
 Main=
+Selected=php\mutation.php
+[New1.txt]
+TopLine=1
+Caret=1,1
+[php\overview.php]
+TopLine=467
+Caret=37,481
+[php\administration.php]
+TopLine=388
+Caret=55,395
+[php\export_month_series.php]
+TopLine=219
+Caret=1,226
+[php\mutation.php]
+TopLine=201
+Caret=1,208

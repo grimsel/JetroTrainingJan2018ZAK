@@ -41,14 +41,14 @@ require_once('../tcpdf/tcpdf_exporter/tcpdf/tcpdf.php');
 	
 	$unionToDay = "UNION ( 
 	           SELECT U.ID_UID_USER, U.UID_Badge,B.Vorname, B.Nachname,'', '',
-			           A.Abteilung, P.Position
+			           A.pStatus, P.Position
 					FROM badging_user B LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER
-					LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+					LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 					LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 					WHERE B.ID_USER NOT IN (SELECT B.ID_USER FROM badging_user B
 											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position 
 											   $dateQuery))  "; // Subquery sucht nach User-IDs in der vorherigen Abfrage
 											   // bereits vorkamen -> UNION-Statement ergänzt fehlende Einträge
@@ -72,11 +72,11 @@ if((isset($_POST['submit']) || isset($_POST['export']) || isset($_POST['export_w
  {	// Start Query des aktuellen Tages	
 			$badgeQuery= $readDB ->query("SELECT Q.* FROM(
 											 (SELECT U.ID_UID_USER, U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-												 A.Abteilung, P.Position
+												 A.pStatus, P.Position
                                               FROM badging_user B
 											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 											   $dateQuery)
 											   $unionToDay)Q $sortQuery");
@@ -175,15 +175,15 @@ setlocale(LC_TIME, 'de_DE');
 				  FROM badging_user B
 				   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 				   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-				   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+				   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 				   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 						$dateQueryExtension "; //  letzte Änderung: $searchQuery $checkboxQuery $isHereStatement
 			
 					$unionFilter = "UNION (
 							SELECT U.ID_UID_USER, U.UID_Badge,B.Vorname, B.Nachname,'', '',
-			           A.Abteilung, P.Position
+			           A.pStatus, P.Position
 					FROM badging_user B LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER
-					LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+					LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 					LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 					LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
 					WHERE B.ID_USER NOT IN ($subQuery) $searchQuery $checkboxQuery
@@ -193,31 +193,31 @@ setlocale(LC_TIME, 'de_DE');
 				// Query mit allen möglichen Kombinationen, Q = Platzhalter für die Tabellen, * = ersetzen durch Attribut
 				$badgeQuery = $readDB ->query("SELECT Q.* FROM(
 											 (SELECT ID_UID_USER,U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-												 A.Abteilung, P.Position
+												 A.pStatus, P.Position
                                               FROM badging_user B
 											   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							                   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-											   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+											   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 											   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 													$dateQueryExtension $searchQuery $checkboxQuery) $unionFilter)Q $isHereStatementUnion  $sortQuery  
 													");
 				$badgeQueryWeek = $readDB ->query("SELECT ID_UID_USER,U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-								 A.Abteilung, P.Position
+								 A.pStatus, P.Position
 							  FROM badging_user B
 							   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-							   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+							   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 							   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 							   WHERE WEEK(T.badging_starttime,1) = WEEK(NOW(),1) AND YEAR(T.badging_starttime) = YEAR(NOW())
 									AND (B.Vorname LIKE $search OR B.Nachname LIKE $search)
 									ORDER BY B.Nachname ASC;
 									");
 				$badgeQueryMonth = $readDB ->query("SELECT ID_UID_USER,U.UID_Badge, B.Vorname, B.Nachname, T.badging_starttime, T.badging_endtime,
-								 A.Abteilung, P.Position
+								 A.pStatus, P.Position
 							  FROM badging_user B
 							   LEFT JOIN uid_user U ON U.USER_Badge_fk = B.ID_USER											  
 							   LEFT JOIN badging_time T ON T.USER_FK = B.ID_USER
-							   LEFT JOIN badging_abteilung A ON B.abteilung_fk = A.ID_abteilung
+							   LEFT JOIN badging_pStatus A ON B.pStatus_fk = A.ID_pStatus
 							   LEFT JOIN badging_position P ON B.position_fk = P.ID_Position
 									WHERE DATE_FORMAT(T.badging_starttime, '%m') = DATE_FORMAT(NOW(), '%m') AND YEAR(T.badging_starttime) = YEAR(NOW())
 										AND (B.Vorname LIKE $search OR B.Nachname LIKE $search)
@@ -478,12 +478,13 @@ setlocale(LC_TIME, 'de_DE');
 							{if(in_array("gl", $_POST['funktion'])) {echo 'checked';} }?>
 						name="funktion[]" value="gl">GL & MA</label>
 						</div>
-						<h3 class="accordion"> Anwesend/Abwesend </h3>
+						<h3 class="accordion"> Anwesenheit </h3>
 						<div class="panel">
 							<label><input type="radio" name="checkBadge" value="anwesend">Anwesend</label>
 							<label><input type="radio" name="checkBadge" value="abwesend">Abwesend</label>
+							<label><input type="radio" name="checkBadge" value="abwesend">Alle</label>
 						</div>	
-						<h3 class="accordion"> Nach Datum </h3>
+						<h3 class="accordion"> Datum </h3>
 						<div class="panel">
 						<label>Startdatum <input type="date" name="datumFrom"
 						<?php if(empty($_POST['datumFrom'])) {echo "value=\"$toDay\"";} else {
@@ -586,7 +587,7 @@ setlocale(LC_TIME, 'de_DE');
 					<?php echo "<tr style=\"color: $color;\" title=\"UID: ". $outputData['UID_Badge'] ."\">"; ?>
 						<?php echo "<td>". htmlspecialchars($outputData['Nachname']) . " " . "</td>"; ?>
 						<?php echo "<td>". htmlspecialchars($outputData['Vorname']) . " " . "</td>"; ?>
-						<?php //echo "<td>" . htmlspecialchars($outputData['Abteilung']) . "</td>"; ?>
+						<?php //echo "<td>" . htmlspecialchars($outputData['pStatus']) . "</td>"; ?>
 						<?php //echo "<td>" . htmlspecialchars($outputData['Position']) . "</td>"; ?>
 						<?php echo "<td>" . substr($outputData['badging_starttime'],11,5) . "</td>"; ?>
 						<?php echo "<td>" . substr($outputData['badging_endtime'],11,5) . "</td>"; ?>
